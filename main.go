@@ -10,6 +10,10 @@ var count int
 func main() {
 	http.HandleFunc("/", handler)
 	http.HandleFunc("/greet", func(w http.ResponseWriter, r *http.Request) {
+		/*
+			command => curl 'localhost:8080/greet?name={name}}'
+		*/
+
 		queryParams := r.URL.Query()
 		name := queryParams.Get("name")
 		handlerHello(w, r, name)
