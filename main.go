@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -18,6 +19,8 @@ func main() {
 		name := queryParams.Get("name")
 		handlerHello(w, r, name)
 	})
+
+	http.HandleFunc("/file", requestHtmlFileOnServer)
 	http.ListenAndServe(":8080", nil)
 }
 
@@ -32,4 +35,19 @@ func handlerHello(w http.ResponseWriter, r *http.Request, name string) {
 	*/
 
 	fmt.Fprintf(w, "Hello, %s\n", name)
+}
+
+func requestHtmlFileOnServer(w http.ResponseWriter, r *http.Request) {
+	response, err := http.Get("https://takahashi-pao.github.io/oretachi-omaetachi/index.html")
+	if err != nil {
+		fmt.Fprintln(w, "Error:", err)
+	}
+	defer response.Body.Close()
+
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		fmt.Fprintln(w, "Error:", err)
+	}
+
+	fmt.Fprintf(w, string(body))
 }
