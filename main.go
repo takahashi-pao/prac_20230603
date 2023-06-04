@@ -37,16 +37,25 @@ func handlerHello(w http.ResponseWriter, r *http.Request, name string) {
 	fmt.Fprintf(w, "Hello, %s\n", name)
 }
 
+// githubサーバー上に保存されたHtmlファイルの取得😃
 func requestHtmlFileOnServer(w http.ResponseWriter, r *http.Request) {
-	response, err := http.Get("https://takahashi-pao.github.io/oretachi-omaetachi/index.html")
+	response, err := http.Get("https://takahashi-pao.github.io/oretachi-omaetachi/inidex.html")
 	if err != nil {
+		// エラー処理
 		fmt.Fprintln(w, "Error:", err)
+		return
+	} else if response.StatusCode == http.StatusNotFound {
+		// 404処理
+		fmt.Fprintln(w, "ファイルが見つかりませんでした。")
+		return
 	}
 	defer response.Body.Close()
 
 	body, err := ioutil.ReadAll(response.Body)
-	if err != nil {
+	if err != nil || response.StatusCode == http.StatusNotFound {
+		// エラー処理
 		fmt.Fprintln(w, "Error:", err)
+		return
 	}
 
 	fmt.Fprintf(w, string(body))
