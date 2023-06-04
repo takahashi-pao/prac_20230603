@@ -39,6 +39,7 @@ func handlerHello(w http.ResponseWriter, r *http.Request, name string) {
 
 // githubサーバー上に保存されたHtmlファイルの取得😃
 func requestHtmlFileOnServer(w http.ResponseWriter, r *http.Request) {
+	// github上のファイルデータをGetリクエストで取得
 	response, err := http.Get("https://takahashi-pao.github.io/oretachi-omaetachi/inidex.html")
 	if err != nil {
 		// エラー処理
