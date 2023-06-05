@@ -21,7 +21,8 @@ func main() {
 		name := queryParams.Get("name")
 		handlerHello(w, r, name)
 	})
-	http.HandleFunc("/afternoon", afternoonHandler)
+	http.HandleFunc("/afternoon", afternoonAPIHandler)
+	http.HandleFunc("/afternoonPage", afternoonPageHandler)
 	http.HandleFunc("/src/script.js", scriptHandler)
 	http.HandleFunc("/favicon.ico", faviconHandler)
 	http.HandleFunc("/file", requestHtmlFileOnServer)
@@ -66,8 +67,19 @@ func faviconHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func afternoonHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "ok")
+func afternoonAPIHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, `{"message": "ok"}`)
+}
+
+func afternoonPageHandler(w http.ResponseWriter, r *http.Request) {
+	response, err := ioutil.ReadFile("./src/afternoon.html")
+	if err != nil {
+		// エラー処理
+		fmt.Fprintln(w, "Error:", err)
+		return
+	}
+
+	fmt.Fprintf(w, string(response))
 }
 
 func handlerHello(w http.ResponseWriter, r *http.Request, name string) {
